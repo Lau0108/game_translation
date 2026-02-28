@@ -25,8 +25,21 @@ from excel_translator.review import (
 
 class MockTranslationResponse:
     """モック翻訳レスポンス"""
-    def __init__(self, translations: List[Dict[str, Any]]):
+    def __init__(
+        self,
+        translations: List[Dict[str, Any]],
+        input_tokens: int = 0,
+        output_tokens: int = 0,
+        cache_read_tokens: int = 0,
+        cache_write_tokens: int = 0,
+        response_time_ms: int = 0,
+    ):
         self.translations = translations
+        self.input_tokens = input_tokens
+        self.output_tokens = output_tokens
+        self.cache_read_tokens = cache_read_tokens
+        self.cache_write_tokens = cache_write_tokens
+        self.response_time_ms = response_time_ms
 
 
 class MockTranslationProvider:
@@ -235,8 +248,8 @@ class TestRun2ndPass:
             {"text_id": "002", "translated_text": "Goodbye"},
         ]
         
-        results = await pipeline.run_2nd_pass(source_texts, pass1_results)
-        
+        results, stats = await pipeline.run_2nd_pass(source_texts, pass1_results)
+
         # 修正が必要な行のみ返される
         assert len(results) == 1
         assert results[0].text_id == "001"
@@ -257,11 +270,11 @@ class TestRun2ndPass:
             prompt_builder=builder,
         )
         
-        results = await pipeline.run_2nd_pass(
+        results, stats = await pipeline.run_2nd_pass(
             [create_source_text("001", "テスト")],
             [{"text_id": "001", "translated_text": "Test"}],
         )
-        
+
         assert len(results) == 0
 
 
@@ -343,8 +356,8 @@ class TestRun3rdPassAI:
             create_translation("001", "こんにちは", "Hello"),
         ]
         
-        results = await pipeline.run_3rd_pass_ai(translations)
-        
+        results, stats = await pipeline.run_3rd_pass_ai(translations)
+
         assert len(results) == 1
         assert results[0].text_id == "001"
         assert results[0].changed is True
@@ -625,11 +638,11 @@ class TestProperty14SecondPassSelfReview:
             for t in source_texts
         ]
         
-        results = await pipeline.run_2nd_pass(source_texts, pass1_results)
-        
+        results, stats = await pipeline.run_2nd_pass(source_texts, pass1_results)
+
         # 返された結果は修正された行のみ
         assert len(results) == num_modifications
-        
+
         # 全ての結果にchanged=Trueが設定されている
         for result in results:
             assert result.changed is True
@@ -668,8 +681,8 @@ class TestProperty14SecondPassSelfReview:
             for t in source_texts
         ]
         
-        results = await pipeline.run_2nd_pass(source_texts, pass1_results)
-        
+        results, stats = await pipeline.run_2nd_pass(source_texts, pass1_results)
+
         # 全ての結果に理由が記録されている
         for result in results:
             assert result.reason is not None
@@ -697,8 +710,8 @@ class TestProperty14SecondPassSelfReview:
             for t in source_texts
         ]
         
-        results = await pipeline.run_2nd_pass(source_texts, pass1_results)
-        
+        results, stats = await pipeline.run_2nd_pass(source_texts, pass1_results)
+
         # 修正不要の場合は空リスト
         assert len(results) == 0
 
@@ -753,8 +766,8 @@ class TestProperty15ThirdPassConsistencyCheck:
         rule_issues = pipeline.run_3rd_pass_rules(translations)
         
         # 2. AIチェックを実行
-        ai_results = await pipeline.run_3rd_pass_ai(translations, rule_issues)
-        
+        ai_results, ai_stats = await pipeline.run_3rd_pass_ai(translations, rule_issues)
+
         # 両方が実行された
         stats = pipeline.get_statistics()
         assert stats["3rd_pass_rules_checked"] == len(translations)
@@ -827,8 +840,8 @@ class TestProperty15ThirdPassConsistencyCheck:
             prompt_builder=builder,
         )
         
-        ai_results = await pipeline.run_3rd_pass_ai(translations)
-        
+        ai_results, ai_stats = await pipeline.run_3rd_pass_ai(translations)
+
         # 全ての結果がPassResult型
         for result in ai_results:
             assert isinstance(result, PassResult)
@@ -1140,8 +1153,8 @@ class TestProperty17PassModificationReasonRecording:
             for t in source_texts
         ]
         
-        results = await pipeline.run_2nd_pass(source_texts, pass1_results)
-        
+        results, stats = await pipeline.run_2nd_pass(source_texts, pass1_results)
+
         # 全ての修正に理由が記録されている
         for result in results:
             assert result.reason is not None
@@ -1176,8 +1189,8 @@ class TestProperty17PassModificationReasonRecording:
             prompt_builder=builder,
         )
         
-        results = await pipeline.run_3rd_pass_ai(translations)
-        
+        results, stats = await pipeline.run_3rd_pass_ai(translations)
+
         # 全ての修正に理由が記録されている
         for result in results:
             assert result.reason is not None
@@ -1304,7 +1317,7 @@ class TestProperty17PassModificationReasonRecording:
             for t in source_texts
         ]
         
-        results = await pipeline.run_2nd_pass(source_texts, pass1_results)
-        
+        results, stats = await pipeline.run_2nd_pass(source_texts, pass1_results)
+
         # 修正なしの場合は結果が空
         assert len(results) == 0

@@ -1004,7 +1004,7 @@ class TranslationService:
                     
                     stats["passes_executed"].append(4)
                     stats["pass_stats"][4]["total_rows"] = len(results)
-                    stats["pass_stats"][4]["modified_rows"] = self._stats.get("4th_pass_discrepancies", 0) # 乖離検出数を便宜上記録
+                    stats["pass_stats"][4]["modified_rows"] = review_pipeline.get_statistics().get("4th_pass_discrepancies", 0)  # 乖離検出数を便宜上記録
                     
                     # バックトランスレーション結果を記録
                     for bt in pass4_res:
