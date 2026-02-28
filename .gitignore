@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.hypothesis/
+.pytest_cache/
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Excel temp files
+.~lock.*#
+
+# Settings with secrets
+settings.yaml
+
+# Test output
+test_output.xlsx
+test_input.xlsx
+
+# Translation progress
+.translation_progress/
+
+# Data files (keep sample only)
+*.xlsx
+!test_input.xlsx
+
+# Claude
+.claude/

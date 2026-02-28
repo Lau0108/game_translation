@@ -1,0 +1,2 @@
+[console_scripts]
+excel-translator = excel_translator.cli:main

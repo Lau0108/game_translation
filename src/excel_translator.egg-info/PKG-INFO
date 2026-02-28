@@ -1,0 +1,29 @@
+Metadata-Version: 2.4
+Name: excel-translator
+Version: 0.1.0
+Summary: ゲームテキスト翻訳システム - Excel to LLM Translation Pipeline
+Author: Developer
+License: MIT
+Keywords: translation,excel,llm,game-localization
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: pandas>=2.0.0
+Requires-Dist: openpyxl>=3.1.0
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: tiktoken>=0.5.0
+Requires-Dist: anthropic>=0.18.0
+Requires-Dist: openai>=1.12.0
+Requires-Dist: google-generativeai>=0.4.0
+Requires-Dist: aiohttp>=3.9.0
+Requires-Dist: python-dotenv>=1.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.23.0; extra == "dev"
+Requires-Dist: hypothesis>=6.98.0; extra == "dev"
